@@ -1,0 +1,5 @@
+{
+  "name": "ZapCRM Mobile",
+  "description": "A modern, mobile-first CRM designed for WhatsApp sellers, featuring a horizontal Kanban board, real-time search, and seamless dark mode transitions.",
+  "requestFramePermissions": []
+}
