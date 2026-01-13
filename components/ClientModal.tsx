@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle, User, Phone, AlignLeft, Calendar, Tag, Clock, AlertTriangle, ChevronDown, DollarSign, Package } from 'lucide-react';
+import { X, CheckCircle, User, Phone, AlignLeft, Calendar, Tag, Clock, AlertTriangle, ChevronDown, DollarSign, Package, Layout, Check } from 'lucide-react';
 import { Client, ColumnDefinition } from '../types';
 
 interface ClientModalProps {
@@ -8,7 +8,7 @@ interface ClientModalProps {
   onClose: () => void;
   onSave: (client: any) => void;
   onDelete?: () => void;
-  initialData?: any | null; // Usando any para facilitar o mapeamento entre UI e DB
+  initialData?: any | null;
   columns?: ColumnDefinition[];
 }
 
@@ -43,6 +43,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showSaleForm, setShowSaleForm] = useState(false);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
 
   useEffect(() => {
     if (initialData && initialData.id) {
@@ -68,6 +69,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
     }
     setShowDeleteConfirm(false);
     setShowSaleForm(false);
+    setIsStatusOpen(false);
     setSaleData({ category: 'Consórcio', model: '', value: '' });
   }, [initialData, isOpen, columns]);
 
@@ -85,7 +87,6 @@ const ClientModal: React.FC<ClientModalProps> = ({
       saleDetails: showSaleForm ? saleData : undefined
     };
 
-    // Se for venda, forçar a última coluna
     if (showSaleForm && columns.length > 0) {
       payload.columnId = columns[columns.length - 1].id;
     }
@@ -103,6 +104,8 @@ const ClientModal: React.FC<ClientModalProps> = ({
       onClose();
     }
   };
+
+  const selectedColumn = columns.find(c => c.id === formData.columnId);
 
   if (!isOpen) return null;
 
@@ -223,24 +226,45 @@ const ClientModal: React.FC<ClientModalProps> = ({
               />
             </div>
 
-            <div className="space-y-3">
+            {/* SELETOR DE STATUS CUSTOMIZADO (INLINE) */}
+            <div className="space-y-2">
               <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Status da Negociação</label>
-              <div className="grid grid-cols-2 gap-2">
-                {columns.map((column) => (
-                  <button
-                    key={column.id}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, columnId: column.id })}
-                    className={`h-12 px-3 rounded-xl border text-[13px] font-bold transition-all flex items-center justify-center gap-2 ${
-                      formData.columnId === column.id
-                        ? 'bg-blue-600 border-blue-600 text-white shadow-md'
-                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-                    }`}
-                  >
-                    <div className={`w-2 h-2 rounded-full ${column.color} ${formData.columnId === column.id ? 'bg-white' : ''}`} />
-                    {column.label}
-                  </button>
-                ))}
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setIsStatusOpen(!isStatusOpen)}
+                  className={`w-full h-14 px-5 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl transition-all ${isStatusOpen ? 'ring-2 ring-blue-500 border-blue-500' : ''}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full ${selectedColumn?.color || 'bg-slate-400'}`} />
+                    <span className="font-bold text-slate-900 dark:text-white">
+                      {selectedColumn?.label || 'Selecione um status'}
+                    </span>
+                  </div>
+                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isStatusOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isStatusOpen && (
+                  <div className="grid grid-cols-1 gap-1 p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl animate-in slide-in-from-top-2 duration-200">
+                    {columns.map((column) => (
+                      <button
+                        key={column.id}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, columnId: column.id });
+                          setIsStatusOpen(false);
+                        }}
+                        className={`w-full h-12 px-4 flex items-center justify-between rounded-xl transition-colors ${formData.columnId === column.id ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full ${formData.columnId === column.id ? 'bg-white' : column.color}`} />
+                          <span className="font-bold text-sm">{column.label}</span>
+                        </div>
+                        {formData.columnId === column.id && <Check className="w-4 h-4" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

@@ -4,7 +4,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Gabriel CRM</title>
+    <title>Gabriel CRM | Gestão Profissional</title>
+    
+    <!-- PWA & Mobile Strategy -->
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Gabriel CRM" />
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=G&background=2563eb&color=fff&size=180" />
+    <link rel="manifest" href="/manifest.json" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -22,21 +31,17 @@
       }
     </script>
     <style>
-      /* Smooth scrolling for Kanban */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       body {
         overscroll-behavior-y: contain;
         overflow: hidden;
         -webkit-tap-highlight-color: transparent;
+        background-color: #f8fafc;
       }
-
-      /* Layout de Páginas (Mobile) vs Horizontal (Desktop) */
+      @media (prefers-color-scheme: dark) {
+        body { background-color: #020617; }
+      }
       .kanban-viewport {
         display: flex;
         overflow-x: auto;
@@ -50,15 +55,14 @@
         flex-shrink: 0;
         width: 100vw;
       }
-
       @media (min-width: 1024px) {
         .kanban-viewport {
-          scroll-snap-type: none; /* Desativa paginação no desktop */
+          scroll-snap-type: none;
           padding: 24px;
-          gap: 20px;
+          gap: 24px;
         }
         .kanban-page {
-          width: auto; /* Colunas assumem largura própria no desktop */
+          width: 350px;
           scroll-snap-align: none;
         }
       }
@@ -83,5 +87,6 @@
   </head>
   <body class="bg-slate-50 dark:bg-slate-950">
     <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>

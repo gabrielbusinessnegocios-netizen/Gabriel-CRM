@@ -2,15 +2,30 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { User, Calendar } from 'lucide-react';
+import { BellRing, PhoneCall, MessageSquareText } from 'lucide-react';
 import { Client } from '../types';
 
 interface ClientCardProps {
   client: Client;
+  columnColor?: string;
   isDragging?: boolean;
   onClick: () => void;
   onWhatsApp: () => void;
 }
+
+// Ícone customizado baseado na imagem enviada pelo usuário
+const CustomAvatarIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 512 512" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="256" cy="256" r="256" fill="url(#avatar_grad)" />
+    <path d="M256 120c44.183 0 80 35.817 80 80s-35.817 80-80 80-80-35.817-80-80 35.817-80 80-80zM120 400c0-75.111 60.889-136 136-136s136 60.889 136 136" stroke="white" strokeWidth="24" strokeLinecap="round" />
+    <defs>
+      <linearGradient id="avatar_grad" x1="0" y1="512" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#00ffd2" />
+        <stop offset="1" stopColor="#00a2ff" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -18,7 +33,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const ClientCard: React.FC<ClientCardProps> = ({ client, isDragging: isOverlay, onClick, onWhatsApp }) => {
+const ClientCard: React.FC<ClientCardProps> = ({ client, columnColor, isDragging: isOverlay, onClick, onWhatsApp }) => {
   const {
     attributes,
     listeners,
@@ -67,35 +82,45 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, isDragging: isOverlay, 
       style={style}
       {...attributes}
       {...listeners}
-      className={`group relative bg-white dark:bg-slate-800 rounded-[28px] p-5 border select-none transition-all duration-300 ${
+      className={`group relative bg-white dark:bg-slate-800 rounded-[30px] p-5 border select-none transition-all duration-300 ${
         isOverlay 
-        ? 'shadow-2xl border-blue-500 cursor-grabbing scale-[1.03] rotate-1 ring-4 ring-blue-500/10' 
-        : 'hover:shadow-xl lg:hover:-translate-y-1 cursor-grab border-slate-100 dark:border-slate-700/50 shadow-sm active:scale-[0.97]'
+        ? 'shadow-2xl border-blue-500 cursor-grabbing scale-[1.03] rotate-1 ring-8 ring-blue-500/5' 
+        : 'hover:shadow-2xl lg:hover:-translate-y-1.5 cursor-grab border-slate-100 dark:border-slate-700 shadow-md active:scale-[0.96]'
       }`}
       onClick={(e) => !isDragging && !isOverlay && onClick()}
     >
       <div className="flex flex-col pointer-events-none">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4 min-w-0 flex-1">
-            <div className={`flex-shrink-0 w-12 h-12 rounded-[18px] flex items-center justify-center relative transition-colors ${hasScheduling ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
-              <User className="w-6 h-6" />
+            {/* Avatar Container Refinado */}
+            <div className="relative">
+              <CustomAvatarIcon className="w-14 h-14 drop-shadow-lg transition-transform group-hover:scale-105" />
               {hasScheduling && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full border-2 border-white dark:border-slate-800 shadow-lg shadow-rose-500/40 animate-pulse flex items-center justify-center">
-                   <Calendar className="w-2 h-2 text-white" />
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-rose-500 rounded-full border-2 border-white dark:border-slate-800 shadow-lg shadow-rose-500/40 flex items-center justify-center animate-pulse z-10">
+                   <BellRing className="w-3.5 h-3.5 text-white" />
                 </div>
               )}
             </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="text-lg font-black text-slate-900 dark:text-slate-100 leading-none truncate mb-1.5">
+
+            <div className="min-w-0 flex-1 pt-0.5">
+              <h3 className="text-[17px] font-black text-slate-900 dark:text-slate-100 leading-tight truncate mb-1.5">
                 {name}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold tracking-tight">
-                {phone}
-              </p>
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl">
+                  <PhoneCall className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <p className="text-[12px] text-slate-600 dark:text-slate-400 font-black tracking-tight">
+                  {phone}
+                </p>
+              </div>
               
               {description && (
-                <div className="mt-3 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                  <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 line-clamp-1 leading-relaxed">
+                <div className="mt-3 bg-slate-50 dark:bg-slate-900/60 px-3 py-2 rounded-2xl border border-slate-100 dark:border-slate-800/50 flex gap-2.5 items-start">
+                  <div className="p-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl shrink-0 mt-0.5">
+                    <MessageSquareText className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 line-clamp-2 leading-tight">
                     {description}
                   </p>
                 </div>
@@ -103,20 +128,25 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, isDragging: isOverlay, 
             </div>
           </div>
           
-          <div className="flex flex-col items-end gap-3 pointer-events-auto shrink-0">
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest whitespace-nowrap px-2 py-1 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800/50">
+          <div className="flex flex-col items-end gap-4 pointer-events-auto shrink-0">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.15em] whitespace-nowrap px-2.5 py-1.5 bg-slate-100/80 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
               {formatDate(date)}
             </span>
             <button
               onClick={(e) => { e.stopPropagation(); onWhatsApp(); }}
-              className={`w-10 h-10 flex items-center justify-center bg-[#25D366] hover:bg-[#20ba5a] active:bg-[#1da851] text-white rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-90 transition-all ${isDragging || isOverlay ? 'opacity-0' : 'opacity-100'}`}
+              className={`w-11 h-11 flex items-center justify-center bg-gradient-to-br from-[#25D366] to-[#128C7E] hover:from-[#20ba5a] hover:to-[#0e7c6f] active:scale-90 text-white rounded-[18px] shadow-xl shadow-emerald-500/40 transition-all border-2 border-white dark:border-slate-800 ${isDragging || isOverlay ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}
               disabled={isDragging || isOverlay}
             >
-              <WhatsAppIcon className="w-5 h-5" />
+              <WhatsAppIcon className="w-6 h-6" />
             </button>
           </div>
         </div>
       </div>
+      
+      {/* Detalhe de acabamento na borda inferior */}
+      {!isOverlay && (
+        <div className={`absolute bottom-0 left-10 right-10 h-[3px] rounded-t-full opacity-60 ${columnColor || 'bg-blue-500'}`} />
+      )}
     </div>
   );
 };

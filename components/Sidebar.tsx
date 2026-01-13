@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, ShoppingBag, LogOut, ChevronRight, LayoutGrid, Download, Users, TrendingUp } from 'lucide-react';
+import { X, ShoppingBag, LogOut, ChevronRight, LayoutGrid, Download, TrendingUp } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,10 +9,6 @@ interface SidebarProps {
   onLogout: () => void;
   onNavigate?: (view: string) => void;
   currentView?: string;
-  stats?: {
-    totalClients: number;
-    totalSales: number;
-  };
   onExport?: () => void;
 }
 
@@ -23,7 +19,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout, 
   onNavigate, 
   currentView,
-  stats,
   onExport
 }) => {
   return (
@@ -62,21 +57,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             Gabriel <span className="text-blue-600">CRM</span>
           </h1>
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1 opacity-60">Professional Edition</p>
-        </div>
-
-        <div className="px-6 mb-8 grid grid-cols-2 gap-3">
-          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-800/50">
-            <Users className="w-5 h-5 text-blue-600 mb-1" />
-            <p className="text-xl font-black text-slate-900 dark:text-white leading-none">{stats?.totalClients || 0}</p>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Leads</p>
-          </div>
-          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-800/50">
-            <ShoppingBag className="w-5 h-5 text-emerald-500 mb-1" />
-            <p className="text-xl font-black text-slate-900 dark:text-white leading-none">
-              {new Intl.NumberFormat('pt-BR', { notation: 'compact' }).format(stats?.totalSales || 0)}
-            </p>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Vendas</p>
-          </div>
         </div>
 
         <div className="flex-1 px-4 space-y-2 overflow-y-auto no-scrollbar">

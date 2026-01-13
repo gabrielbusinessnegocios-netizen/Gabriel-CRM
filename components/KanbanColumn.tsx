@@ -66,28 +66,18 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, clients, onClientCl
         >
           {clients.length > 0 ? (
             clients.map((client) => (
-              <ClientCard 
+              <ClientCard
                 key={client.id}
-                client={client} 
+                client={client}
+                columnColor={column.color}
                 onClick={() => onClientClick(client)}
-                onWhatsApp={() => onWhatsAppClick(client.phone)}
+                onWhatsApp={() => onWhatsAppClick(client.phone || client.telefone)}
               />
             ))
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-slate-300 dark:text-slate-800 space-y-4 pointer-events-none py-10">
-              {isSearching ? (
-                <>
-                  <SearchX className="w-12 h-12 opacity-20" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center opacity-40">Sem resultados</p>
-                </>
-              ) : (
-                <>
-                  <div className="w-16 h-16 rounded-[28px] border-2 border-dashed border-current flex items-center justify-center opacity-20">
-                    <Layout className="w-6 h-6" />
-                  </div>
-                  <p className="text-xs font-bold opacity-30">Status vazio</p>
-                </>
-              )}
+            <div className="flex flex-col items-center justify-center py-10 opacity-30 text-center">
+              <Layout className="w-12 h-12 mb-2" />
+              <p className="text-xs font-bold uppercase tracking-widest">Coluna Vazia</p>
             </div>
           )}
         </SortableContext>

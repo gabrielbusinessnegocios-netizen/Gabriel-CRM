@@ -305,10 +305,6 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         onNavigate={(view) => { setCurrentView(view as ViewType); setIsDrawerOpen(false); }}
         currentView={currentView}
-        stats={{
-          totalClients: clients.length,
-          totalSales: vendas.reduce((acc, v) => acc + Number(v.valor), 0)
-        }}
         onExport={handleExportData}
       />
 
@@ -343,7 +339,7 @@ const App: React.FC = () => {
               isSearching={!!searchQuery}
               dragPointerX={dragPointerX}
             />
-            <FAB onClick={() => setSelectedClient({} as any)} />
+            {!selectedClient && <FAB onClick={() => setSelectedClient({} as any)} />}
           </DndContext>
         ) : (
           <div className="p-6 h-full overflow-y-auto pb-32 no-scrollbar animate-in fade-in duration-500">

@@ -1,0 +1,23 @@
+
+{
+  "name": "Gabriel CRM Professional",
+  "short_name": "Gabriel CRM",
+  "description": "Gestão e CRM mobile-first para vendedores de WhatsApp.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://ui-avatars.com/api/?name=G&background=2563eb&color=fff&size=192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://ui-avatars.com/api/?name=G&background=2563eb&color=fff&size=512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
