@@ -5,29 +5,46 @@ export interface Schedule {
   notes?: string;
 }
 
-export interface ColumnDefinition {
+export interface Profile {
   id: string;
-  label: string;
-  color: string; // Tailwind class like 'bg-blue-500'
+  nome?: string;
+  sobrenome?: string;
+  email: string;
 }
 
 export interface Client {
   id: string;
-  userId: string; // Identificador do usuário dono do dado
-  name: string;
-  phone: string;
-  description: string;
-  date: string;
-  columnId: string;
-  order: number;
-  scheduling?: Schedule; // Dados de agendamento opcional
+  user_id: string;
+  nome_cliente: string;
+  name?: string; // Mapeado na UI
+  telefone: string;
+  phone?: string; // Mapeado na UI
+  descricao: string;
+  description?: string; // Mapeado na UI
+  status: string; // ID da coluna no banco
+  columnId?: string; // Mapeado na UI
+  ordem: number;
+  agendamento?: Schedule;
+  scheduling?: Schedule; // Mapeado na UI
+  created_at: string;
+  date?: string; // Mapeado na UI
 }
 
-export interface KanbanColumnProps {
-  column: ColumnDefinition;
-  clients: Client[];
-  onClientClick: (client: Client) => void;
-  onWhatsAppClick: (phone: string) => void;
-  onEditColumn: (column: ColumnDefinition) => void;
-  isSearching: boolean;
+export interface Sale {
+  id: string;
+  user_id: string;
+  cliente_id: string;
+  modelo: string;
+  categoria: string;
+  valor: number;
+  mes_referencia: string;
+  created_at: string;
+}
+
+export interface ColumnDefinition {
+  id: string;
+  user_id?: string;
+  label: string;
+  color: string;
+  ordem: number;
 }

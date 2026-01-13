@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { User } from 'lucide-react';
+import { User, Calendar } from 'lucide-react';
 import { Client } from '../types';
 
 interface ClientCardProps {
@@ -32,9 +32,11 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, isDragging: isOverlay, 
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.3 : 1,
+    zIndex: isOverlay ? 100 : 1,
   };
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return '';
     const d = new Date(dateStr);
     const today = new Date();
     const yesterday = new Date();
@@ -44,7 +46,20 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, isDragging: isOverlay, 
     return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
   };
 
-  const hasScheduling = client.scheduling && new Date(`${client.scheduling.date}T${client.scheduling.time}`) >= new Date(new Date().setHours(0,0,0,0));
+  const name = client.name || client.nome_cliente;
+  const phone = client.phone || client.telefone;
+  const description = client.description || client.descricao;
+  const date = client.date || client.created_at;
+  const scheduling = client.scheduling || client.agendamento;
+
+  const checkHasScheduling = () => {
+    if (!scheduling || !scheduling.date) return false;
+    const schedDate = new Date(`${scheduling.date}T${scheduling.time || '00:00'}`);
+    const now = new Date();
+    return schedDate >= new Date(now.setHours(0,0,0,0));
+  };
+
+  const hasScheduling = checkHasScheduling();
 
   return (
     <div 
@@ -52,46 +67,49 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, isDragging: isOverlay, 
       style={style}
       {...attributes}
       {...listeners}
-      className={`group relative bg-white dark:bg-slate-800 rounded-[20px] p-4 border select-none transition-shadow ${
+      className={`group relative bg-white dark:bg-slate-800 rounded-[28px] p-5 border select-none transition-all duration-300 ${
         isOverlay 
-        ? 'shadow-xl border-blue-500 z-[100] cursor-grabbing scale-105 rotate-1' 
-        : 'hover:shadow-md active:scale-[0.98] cursor-grab border-slate-100 dark:border-slate-700 shadow-sm'
+        ? 'shadow-2xl border-blue-500 cursor-grabbing scale-[1.03] rotate-1 ring-4 ring-blue-500/10' 
+        : 'hover:shadow-xl lg:hover:-translate-y-1 cursor-grab border-slate-100 dark:border-slate-700/50 shadow-sm active:scale-[0.97]'
       }`}
       onClick={(e) => !isDragging && !isOverlay && onClick()}
     >
       <div className="flex flex-col pointer-events-none">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mt-0.5 relative">
-              <User className="w-5 h-5" />
-              {/* Indicador de agendamento: Ajustado tamanho e posição conforme pedido */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4 min-w-0 flex-1">
+            <div className={`flex-shrink-0 w-12 h-12 rounded-[18px] flex items-center justify-center relative transition-colors ${hasScheduling ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+              <User className="w-6 h-6" />
               {hasScheduling && (
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full border-2 border-white dark:border-slate-800 shadow-lg shadow-rose-500/40 animate-pulse flex items-center justify-center">
+                   <Calendar className="w-2 h-2 text-white" />
+                </div>
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">
-                {client.name}
+              <h3 className="text-lg font-black text-slate-900 dark:text-slate-100 leading-none truncate mb-1.5">
+                {name}
               </h3>
-              <p className="text-[12px] text-slate-500 dark:text-slate-400 font-medium tracking-tight">
-                {client.phone}
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold tracking-tight">
+                {phone}
               </p>
               
-              {client.description && (
-                <p className="text-[12px] font-medium text-slate-600 dark:text-slate-400 line-clamp-1 leading-relaxed mt-1">
-                  {client.description}
-                </p>
+              {description && (
+                <div className="mt-3 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                  <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 line-clamp-1 leading-relaxed">
+                    {description}
+                  </p>
+                </div>
               )}
             </div>
           </div>
           
-          <div className="flex flex-col items-end gap-1.5 pointer-events-auto shrink-0">
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold whitespace-nowrap bg-slate-50 dark:bg-slate-900/50 px-2 py-0.5 rounded-md">
-              {formatDate(client.date)}
+          <div className="flex flex-col items-end gap-3 pointer-events-auto shrink-0">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest whitespace-nowrap px-2 py-1 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800/50">
+              {formatDate(date)}
             </span>
             <button
               onClick={(e) => { e.stopPropagation(); onWhatsApp(); }}
-              className={`w-9 h-9 flex items-center justify-center bg-[#25D366] hover:bg-[#20ba5a] active:bg-[#1da851] text-white rounded-full shadow-lg shadow-emerald-500/20 active:scale-90 transition-all ${isDragging || isOverlay ? 'opacity-0' : 'opacity-100'}`}
+              className={`w-10 h-10 flex items-center justify-center bg-[#25D366] hover:bg-[#20ba5a] active:bg-[#1da851] text-white rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-90 transition-all ${isDragging || isOverlay ? 'opacity-0' : 'opacity-100'}`}
               disabled={isDragging || isOverlay}
             >
               <WhatsAppIcon className="w-5 h-5" />

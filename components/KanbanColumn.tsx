@@ -25,9 +25,9 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, clients, onClientCl
   });
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950">
+    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 lg:bg-white/50 lg:dark:bg-slate-900/20 lg:rounded-[32px] lg:border lg:border-slate-200/60 lg:dark:border-slate-800/60 lg:shadow-sm overflow-hidden">
       {/* Header Estilo "Título de Página" */}
-      <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-xl">
+      <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between bg-slate-50/90 dark:bg-slate-950/90 lg:bg-white/80 lg:dark:bg-slate-900/80 backdrop-blur-xl">
         <div className="flex flex-col">
           <div className="flex items-center gap-2 mb-0.5">
             <div className={`w-3 h-3 rounded-full ${column.color} shadow-sm border border-black/5 dark:border-white/10`} />
@@ -55,10 +55,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, clients, onClientCl
         <div className={`h-[4px] w-full ${column.color} rounded-full opacity-30`} />
       </div>
 
-      {/* Lista de Cards (Página) */}
+      {/* Lista de Cards com Scroll Interno Individual no Desktop */}
       <div 
         ref={setNodeRef}
-        className={`flex-1 overflow-y-auto px-6 py-4 pb-32 space-y-4 no-scrollbar min-h-[200px] transition-colors duration-200 ${isOver ? 'bg-slate-100/50 dark:bg-slate-900/30' : ''}`}
+        className={`flex-1 overflow-y-auto px-6 py-4 lg:pb-6 space-y-4 no-scrollbar min-h-[200px] transition-colors duration-200 ${isOver ? 'bg-slate-100/50 dark:bg-slate-900/30' : ''}`}
       >
         <SortableContext 
           items={clients.map(c => c.id)} 
@@ -74,18 +74,18 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, clients, onClientCl
               />
             ))
           ) : (
-            <div className="h-[60vh] flex flex-col items-center justify-center text-slate-300 dark:text-slate-800 space-y-4 pointer-events-none">
+            <div className="h-full flex flex-col items-center justify-center text-slate-300 dark:text-slate-800 space-y-4 pointer-events-none py-10">
               {isSearching ? (
                 <>
-                  <SearchX className="w-16 h-16 opacity-20" />
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-center opacity-40">Sem resultados</p>
+                  <SearchX className="w-12 h-12 opacity-20" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center opacity-40">Sem resultados</p>
                 </>
               ) : (
                 <>
-                  <div className="w-20 h-20 rounded-[32px] border-2 border-dashed border-current flex items-center justify-center opacity-20">
-                    <Layout className="w-8 h-8" />
+                  <div className="w-16 h-16 rounded-[28px] border-2 border-dashed border-current flex items-center justify-center opacity-20">
+                    <Layout className="w-6 h-6" />
                   </div>
-                  <p className="text-sm font-bold opacity-30">Coluna vazia</p>
+                  <p className="text-xs font-bold opacity-30">Status vazio</p>
                 </>
               )}
             </div>

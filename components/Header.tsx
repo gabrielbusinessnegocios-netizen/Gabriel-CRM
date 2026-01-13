@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Moon, Sun, Users, ArrowRight, PlusSquare } from 'lucide-react';
+import { Search, Moon, Sun, ArrowRight, PlusSquare, Menu } from 'lucide-react';
 import { Client, ColumnDefinition } from '../types';
 
 interface HeaderProps {
@@ -12,6 +12,8 @@ interface HeaderProps {
   columns: ColumnDefinition[];
   onJumpToClient: (client: Client) => void;
   onAddColumn: () => void;
+  onMenuClick: () => void;
+  hideAddColumn?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -22,7 +24,9 @@ const Header: React.FC<HeaderProps> = ({
   filteredClients,
   columns,
   onJumpToClient,
-  onAddColumn
+  onAddColumn,
+  onMenuClick,
+  hideAddColumn = false
 }) => {
   const [showResults, setShowResults] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,11 +53,19 @@ const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 p-4 pt-10 md:pt-4">
       <div className="flex flex-col gap-3 max-w-5xl mx-auto relative" ref={containerRef}>
         <div className="flex items-center gap-2">
+          {/* Botão do Menu Lateral - AGORA VISÍVEL EM TODOS OS DISPOSITIVOS */}
+          <button 
+            onClick={onMenuClick}
+            className="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90 border border-slate-200/50 dark:border-slate-700/50"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
           <div className="relative flex-1 group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
             <input
               type="text"
-              placeholder="Buscar cliente ou telefone..."
+              placeholder="Buscar cliente..."
               className="w-full h-12 pl-12 pr-4 bg-slate-100 dark:bg-slate-800/50 border-2 border-transparent rounded-2xl text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-500/50 transition-all outline-none text-sm font-bold"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
@@ -62,13 +74,15 @@ const Header: React.FC<HeaderProps> = ({
           </div>
           
           <div className="flex items-center gap-1.5">
-            <button 
-              onClick={onAddColumn}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90 border border-slate-200/50 dark:border-slate-700/50"
-              title="Nova Coluna"
-            >
-              <PlusSquare className="w-6 h-6 text-blue-500" />
-            </button>
+            {!hideAddColumn && (
+              <button 
+                onClick={onAddColumn}
+                className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90 border border-slate-200/50 dark:border-slate-700/50"
+                title="Nova Coluna"
+              >
+                <PlusSquare className="w-6 h-6 text-blue-500" />
+              </button>
+            )}
 
             <button 
               onClick={onToggleTheme}
